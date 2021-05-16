@@ -1,0 +1,1 @@
+A mini project for learning ASP.NET Core and React.
