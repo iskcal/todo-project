@@ -15,7 +15,7 @@ namespace TodoApi
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-
+            SeedData(host);
             host.Run();
         }
 
@@ -32,6 +32,7 @@ namespace TodoApi
             using var scope = services.CreateScope();
             var sp = scope.ServiceProvider;
             var context = sp.GetRequiredService<TodoContext>();
+            context.Database.EnsureCreated();
             if (!context.Todos.Any())
             {
                 var todos = SetInitialTodoItems();
