@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,6 +43,7 @@ namespace TodoApi
             var todo = new TodoItem()
             {
                 Content = content,
+                CreateTime = DateTime.Now,
                 Finished = false,
                 Top = top,
             };

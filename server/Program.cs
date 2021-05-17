@@ -48,18 +48,21 @@ namespace TodoApi
                 new TodoItem()
                 {
                     Content = "Send an email to Alice at 6:00",
+                    CreateTime = DateTime.Now.AddDays(1),
                     Finished = false,
                     Top = false,
                 },
                 new TodoItem()
                 {
                     Content = "Connect with Bob to discuss the website",
+                    CreateTime = DateTime.Now.AddDays(-1),
                     Finished = true,
                     Top = false,
                 },
                 new TodoItem()
                 {
                     Content = "Make a report of the meeting",
+                    CreateTime = DateTime.Now,
                     Finished = false,
                     Top = true,
                 },
