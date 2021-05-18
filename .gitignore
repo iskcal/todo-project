@@ -2,6 +2,6 @@
 /server/bin/
 /server/todo.db
 
-/client/node_modules
+/client/node_modules/
 
 /.vscode/
