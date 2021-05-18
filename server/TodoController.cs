@@ -30,11 +30,7 @@ namespace TodoApi
         public IActionResult GetTodos()
         {
             var todos = _context.Todos.ToList();
-            if (todos.Any())
-            {
-                return Ok(todos);
-            }
-            return NotFound();
+            return Ok(todos);
         }
 
         [HttpPost("")]
