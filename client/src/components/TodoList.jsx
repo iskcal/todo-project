@@ -2,13 +2,27 @@ import { HStack, IconButton, VStack, Text, StackDivider, Badge, Alert, AlertIcon
 import { FaArrowAltCircleUp, FaTrashAlt, FaCheck, FaTimes, FaArrowAltCircleDown } from 'react-icons/fa';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
-const switchFinish = async (todo) => {
-  const res = await fetch(`https://localhost:5001/${todo.id}/finish?finish=${!todo.finished}`,{
+const switchFinish = (todo) => {
+  fetch(`https://localhost:5001/${todo.id}/finish?finish=${!todo.finished}`,{
     method: 'POST',
     mode: 'cors',
     body: JSON.stringify({finished: !todo.finished})
   })
-  return res.json()
+}
+
+const switchTop = (todo) => {
+  fetch(`https://localhost:5001/${todo.id}/top?top=${!todo.top}`,{
+    method: 'POST',
+    mode: 'cors',
+    body: JSON.stringify({finished: !todo.top})
+  })
+}
+
+const deleteTodo = (todo) => {
+  fetch(`https://localhost:5001/Todo/${todo.id}`, {
+    method: 'DELETE',
+    mode: 'cors'
+  })
 }
 
 export default function TodoList() {
@@ -17,7 +31,9 @@ export default function TodoList() {
       method: 'GET',
       mode: 'cors',
     });
-    const result = await data.json();
+    let result = [];
+    if (data.status === 200) 
+      result = await data.json();
     return result;
   });
 
@@ -33,8 +49,24 @@ export default function TodoList() {
   }
 
   const queryClient = useQueryClient();
-  const finishMutation = useMutation(todo=>switchFinish(todo), {
-    onSuccess: (data) => {
+  const todoMutation = useMutation(({type, todo}) => {
+      switch(type) {
+        case 'FINISH':
+          switchFinish(todo)
+          break;
+        case 'TOP':
+          switchTop(todo)
+          break;
+        case 'DELETE':
+          deleteTodo(todo)
+          break;
+        default:
+          ;
+      }
+    }, {
+    onSuccess: () => {
+      console.log('success')
+      queryClient.invalidateQueries("todos")
       queryClient.refetchQueries("todos")
     }
   });
@@ -85,9 +117,9 @@ export default function TodoList() {
             <Text alignSelf="flex-start" fontSize="xl" isTruncated textDecoration={t.finished ? 'line-through': 'none'} w='100%'>{t.content}</Text>
             <Text fontSize="xs" alignSelf="flex-end">{t.createTime.toLocaleString()}</Text>
           </VStack>
-          <IconButton icon={<FaTrashAlt />}/>
-          <IconButton isDisabled={t.finished} icon={t.top ? <FaArrowAltCircleDown /> : <FaArrowAltCircleUp />}/>
-          <IconButton icon={t.finished ? <FaTimes /> : <FaCheck />} onClick={()=>finishMutation.mutate(t)}/>
+          <IconButton icon={<FaTrashAlt />} onClick={()=>todoMutation.mutate({type: 'DELETE', todo: t})}/>
+          <IconButton isDisabled={t.finished} icon={t.top ? <FaArrowAltCircleDown /> : <FaArrowAltCircleUp />} onClick={()=>todoMutation.mutate({type: 'TOP', todo: t})}/>
+          <IconButton icon={t.finished ? <FaTimes /> : <FaCheck />} onClick={()=>todoMutation.mutate({ type: 'FINISH', todo: t})}/>
         </HStack>
       ))}
     </VStack>
