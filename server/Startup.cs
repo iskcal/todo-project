@@ -36,6 +36,13 @@ namespace TodoApi
             services.AddDbContext<TodoContext>(options => {
                 options.UseSqlite("Data Source=todo.db");
             });
+            services.AddCors(options => {
+                options.AddPolicy("cors", builder => {
+                    builder.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +58,8 @@ namespace TodoApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("cors");
 
             app.UseAuthorization();
 
