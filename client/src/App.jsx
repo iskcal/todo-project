@@ -1,5 +1,4 @@
-import { VStack, Heading, Text } from '@chakra-ui/react';
-import { useQuery } from 'react-query';
+import { VStack, Heading } from '@chakra-ui/react';
 import TodoList from './components/TodoList';
 
 function App() {

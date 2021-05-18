@@ -1,6 +1,15 @@
-import { HStack, IconButton, VStack, Text, StackDivider, Badge } from '@chakra-ui/react';
+import { HStack, IconButton, VStack, Text, StackDivider, Badge, Alert, AlertIcon } from '@chakra-ui/react';
 import { FaArrowAltCircleUp, FaTrashAlt, FaCheck, FaTimes, FaArrowAltCircleDown } from 'react-icons/fa';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
+
+const switchFinish = async (todo) => {
+  const res = await fetch(`https://localhost:5001/${todo.id}/finish?finish=${!todo.finished}`,{
+    method: 'POST',
+    mode: 'cors',
+    body: JSON.stringify({finished: !todo.finished})
+  })
+  return res.json()
+}
 
 export default function TodoList() {
   const { data, isLoading, isError } = useQuery('todos', async() => {
@@ -23,12 +32,27 @@ export default function TodoList() {
     }
   }
 
+  const queryClient = useQueryClient();
+  const finishMutation = useMutation(todo=>switchFinish(todo), {
+    onSuccess: (data) => {
+      queryClient.refetchQueries("todos")
+    }
+  });
+
+
   if (isLoading) {
-    return <Text>Loading</Text>;
+    return (
+      <></>
+    );
   }
 
   if (isError) {
-    return <Text>Error</Text>;
+    return (
+      <Alert status="error" w='70%'>
+        <AlertIcon />
+        Cannot loading data from the server.
+      </Alert>
+    );
   }
 
   const todos = data.map(t=>{
@@ -54,7 +78,7 @@ export default function TodoList() {
   }
 
   return (
-    <VStack divider={<StackDivider />} w='60%' align='stretch' borderWidth='2px' p='4' borderRadius='lg'>
+    <VStack divider={<StackDivider />} w='70%' minW='400px' align='stretch' borderWidth='2px' p='4' borderRadius='lg'>
       {todos.sort(compare).map(t => (
         <HStack key={t.id} color={t.top && !t.finished ? 'red.500': 'gray.700'}>
           <VStack flex="1" isTruncated>
@@ -63,9 +87,9 @@ export default function TodoList() {
           </VStack>
           <IconButton icon={<FaTrashAlt />}/>
           <IconButton isDisabled={t.finished} icon={t.top ? <FaArrowAltCircleDown /> : <FaArrowAltCircleUp />}/>
-          <IconButton icon={t.finished ? <FaTimes /> : <FaCheck />}/>
+          <IconButton icon={t.finished ? <FaTimes /> : <FaCheck />} onClick={()=>finishMutation.mutate(t)}/>
         </HStack>
       ))}
     </VStack>
-  )
+  );
 }
