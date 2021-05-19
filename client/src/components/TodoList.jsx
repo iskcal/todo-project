@@ -52,20 +52,21 @@ export default function TodoList() {
 
   const queryClient = useQueryClient();
   const todoMutation = useMutation(({type, todo}) => {
-      switch(type) {
-        case 'FINISH':
-          switchFinish(todo)
-          break;
-        case 'TOP':
-          switchTop(todo)
-          break;
-        case 'DELETE':
-          deleteTodo(todo)
-          break;
-        default:
-          ;
-      }
-    }, {
+    console.log("proceeding")
+    switch(type) {
+      case 'FINISH':
+        switchFinish(todo)
+        break;
+      case 'TOP':
+        switchTop(todo)
+        break;
+      case 'DELETE':
+        deleteTodo(todo)
+        break;
+      default:
+        ;
+    }
+  }, {
     onSettled: () => {
       console.log('refetching')
       queryClient.refetchQueries("todos")
