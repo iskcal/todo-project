@@ -67,9 +67,10 @@ export default function TodoList() {
         ;
     }
   }, {
-    onSettled: () => {
-      console.log('refetching')
-      queryClient.refetchQueries("todos")
+    onSuccess: () => {
+      setTimeout(() => {
+        queryClient.refetchQueries("todos") // prevent data re-fetching before database updates
+      }, 50);
     }
   });
 
@@ -98,10 +99,6 @@ export default function TodoList() {
       top: t.top,
     }
   });
-
-  if (!todos) {
-    return <Text>Nothing</Text>
-  }
 
   if (!todos.length) {
     return (

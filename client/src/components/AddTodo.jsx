@@ -16,8 +16,11 @@ export default function AddTodo() {
       mode: 'cors',
     });
   }, {
-    onSettled: () => {
-      queryClient.refetchQueries("todos");
+    onSuccess: () => {
+      setTimeout(() => {
+        queryClient.refetchQueries("todos");
+      }, 50);
+      setContent('');
     }
   });
 
