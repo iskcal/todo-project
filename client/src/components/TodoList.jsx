@@ -3,7 +3,7 @@ import { FaArrowAltCircleUp, FaTrashAlt, FaCheck, FaTimes, FaArrowAltCircleDown 
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 const switchFinish = (todo) => {
-  fetch(`https://localhost:5001/${todo.id}/finish?finish=${!todo.finished}`,{
+  fetch(`http://localhost:5000/${todo.id}/finish?finish=${!todo.finished}`,{
     method: 'POST',
     mode: 'cors',
     // body: JSON.stringify({finished: !todo.finished})
@@ -11,7 +11,7 @@ const switchFinish = (todo) => {
 }
 
 const switchTop = (todo) => {
-  fetch(`https://localhost:5001/${todo.id}/top?top=${!todo.top}`,{
+  fetch(`http://localhost:5000/${todo.id}/top?top=${!todo.top}`,{
     method: 'POST',
     mode: 'cors',
     // body: JSON.stringify({finished: !todo.top})
@@ -19,7 +19,7 @@ const switchTop = (todo) => {
 }
 
 const deleteTodo = (todo) => {
-  fetch(`https://localhost:5001/Todo/${todo.id}`, {
+  fetch(`http://localhost:5000/Todo/${todo.id}`, {
     method: 'DELETE',
     mode: 'cors'
   })
@@ -27,7 +27,7 @@ const deleteTodo = (todo) => {
 
 export default function TodoList() {
   const { data, isLoading, isError } = useQuery('todos', async() => {
-    const data = await fetch("https://localhost:5001/Todo", {
+    const data = await fetch("http://localhost:5000/Todo", {
       method: 'GET',
       mode: 'cors',
     });
@@ -69,7 +69,7 @@ export default function TodoList() {
     onSuccess: () => {
       setTimeout(() => {
         queryClient.refetchQueries("todos") // prevent data re-fetching before database updates
-      }, 50);
+      }, 100);
     }
   });
 
