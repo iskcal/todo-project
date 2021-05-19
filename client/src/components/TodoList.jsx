@@ -6,7 +6,7 @@ const switchFinish = (todo) => {
   fetch(`https://localhost:5001/${todo.id}/finish?finish=${!todo.finished}`,{
     method: 'POST',
     mode: 'cors',
-    body: JSON.stringify({finished: !todo.finished})
+    // body: JSON.stringify({finished: !todo.finished})
   })
 }
 
@@ -14,7 +14,7 @@ const switchTop = (todo) => {
   fetch(`https://localhost:5001/${todo.id}/top?top=${!todo.top}`,{
     method: 'POST',
     mode: 'cors',
-    body: JSON.stringify({finished: !todo.top})
+    // body: JSON.stringify({finished: !todo.top})
   })
 }
 
@@ -35,6 +35,8 @@ export default function TodoList() {
     if (data.status === 200) 
       result = await data.json();
     return result;
+  }, {
+    cacheTime: 0
   });
 
   const compare = (prev, next) => {
@@ -64,9 +66,8 @@ export default function TodoList() {
           ;
       }
     }, {
-    onSuccess: () => {
-      console.log('success')
-      queryClient.invalidateQueries("todos")
+    onSettled: () => {
+      console.log('refetching')
       queryClient.refetchQueries("todos")
     }
   });
