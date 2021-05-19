@@ -50,4 +50,4 @@ npm start
 
 ## Application Interface
 
-![Application Interface](https://github.com/iskcal/todo-project/blob/master/screen.PNG | width=100)
+![Application Interface](https://github.com/iskcal/todo-project/blob/master/screen.PNG)
