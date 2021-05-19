@@ -24,6 +24,9 @@ A mini project for learning ASP.NET Core and React based on microservices.
 + [sqlite](https://www.sqlite.org/)(3.35.3)
 + [nodeJs](https://nodejs.org/)(14.17.0)
 
+Or 
+- [Docker](https://www.docker.com/)
+
 ## Steps
 
 1. Clone the project
@@ -46,6 +49,12 @@ dotnet run
 cd ../client
 npm install
 npm start
+```
+
+## Launch on Docker
+
+```bash
+docker-compose up -d
 ```
 
 ## Application Interface

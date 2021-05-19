@@ -18,7 +18,7 @@ export default function AddTodo() {
     onSuccess: () => {
       setTimeout(() => {
         queryClient.refetchQueries("todos");
-      }, 200);
+      }, 100);
       setContent('');
     }
   });
