@@ -10,7 +10,6 @@ export default function AddTodo() {
   
   const queryClient = useQueryClient();
   const addTodoMutation = useMutation(()=>{
-    console.log({content, top});
     fetch(`https://localhost:5001/Todo?content=${encodeURIComponent(content)}&top=${top}`, {
       method: 'POST',
       mode: 'cors',

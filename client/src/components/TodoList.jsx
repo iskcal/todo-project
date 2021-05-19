@@ -52,7 +52,6 @@ export default function TodoList() {
 
   const queryClient = useQueryClient();
   const todoMutation = useMutation(({type, todo}) => {
-    console.log("proceeding")
     switch(type) {
       case 'FINISH':
         switchFinish(todo)
