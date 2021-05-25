@@ -2,27 +2,30 @@ import { HStack, IconButton, VStack, Text, StackDivider, Badge, Alert, AlertIcon
 import { FaArrowAltCircleUp, FaTrashAlt, FaCheck, FaTimes, FaArrowAltCircleDown } from 'react-icons/fa';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
-const switchFinish = (todo) => {
-  fetch(`http://localhost:5000/${todo.id}/finish?finish=${!todo.finished}`,{
+const switchFinish = async (todo) => {
+  const data = await fetch(`http://localhost:5000/${todo.id}/finish?finish=${!todo.finished}`,{
     method: 'POST',
     mode: 'cors',
     // body: JSON.stringify({finished: !todo.finished})
-  })
+  });
+  return await data.json();
 }
 
-const switchTop = (todo) => {
-  fetch(`http://localhost:5000/${todo.id}/top?top=${!todo.top}`,{
+const switchTop = async (todo) => {
+  const data = await fetch(`http://localhost:5000/${todo.id}/top?top=${!todo.top}`,{
     method: 'POST',
     mode: 'cors',
     // body: JSON.stringify({finished: !todo.top})
-  })
+  });
+  return await data.json();
 }
 
-const deleteTodo = (todo) => {
-  fetch(`http://localhost:5000/Todo/${todo.id}`, {
+const deleteTodo = async (todo) => {
+  const data = await fetch(`http://localhost:5000/Todo/${todo.id}`, {
     method: 'DELETE',
     mode: 'cors'
-  })
+  });
+  return await data.json();
 }
 
 export default function TodoList() {
@@ -48,28 +51,27 @@ export default function TodoList() {
     else {
       return prev.createTime - next.createTime;
     }
-  }
+  };
 
   const queryClient = useQueryClient();
   const todoMutation = useMutation(({type, todo}) => {
     switch(type) {
       case 'FINISH':
-        switchFinish(todo)
-        break;
+        return switchFinish(todo)
       case 'TOP':
-        switchTop(todo)
-        break;
+        return switchTop(todo)
       case 'DELETE':
-        deleteTodo(todo)
-        break;
+        return deleteTodo(todo)
       default:
         ;
     }
   }, {
-    onSuccess: () => {
-      setTimeout(() => {
-        queryClient.refetchQueries("todos") // prevent data re-fetching before database updates
-      }, 100);
+    onSuccess: (data, variable) => {
+      if (variable.type === 'DELETE') {
+        queryClient.setQueryData('todos', todos.filter(t=>t.id !== data.id));
+      } else if (variable.type === 'FINISH' || variable.type === 'TOP') {
+        queryClient.setQueryData('todos', todos.map(t => t.id === data.id? data : t));
+      }
     }
   });
 

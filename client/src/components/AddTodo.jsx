@@ -9,16 +9,16 @@ export default function AddTodo() {
   const [top, setTop] = useState(false);
   
   const queryClient = useQueryClient();
-  const addTodoMutation = useMutation(()=>{
-    fetch(`http://localhost:5000/Todo?content=${encodeURIComponent(content)}&top=${top}`, {
+  const addTodoMutation = useMutation(async ()=>{
+    const data = await fetch(`http://localhost:5000/Todo?content=${encodeURIComponent(content)}&top=${top}`, {
       method: 'POST',
       mode: 'cors',
     });
+    return await data.json();
   }, {
-    onSuccess: () => {
-      setTimeout(() => {
-        queryClient.refetchQueries("todos");
-      }, 100);
+    onSuccess: (data) => {
+      const todos = queryClient.getQueryData('todos');
+      queryClient.setQueryData('todos', [...todos, data])
       setContent('');
     }
   });
